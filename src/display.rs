@@ -8,4 +8,8 @@ impl Display {
             data: [0; 64 * 32],
         }
     }
+
+    pub fn clear(&mut self) {
+        
+    }
 }
