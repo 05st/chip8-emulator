@@ -1,4 +1,5 @@
 use crate::display::Display;
+use rand::Rng;
 
 pub struct Cpu {
     memory: [u8; 4096],
@@ -9,7 +10,7 @@ pub struct Cpu {
     delay_timer: u8,
     sound_timer: u8,
     pc: usize,
-    display: Display,
+    pub display: Display,
 }
 
 impl Cpu {
@@ -123,8 +124,28 @@ impl Cpu {
             },
             0xB000..=0xBFFF => self.pc = (((opcode & 0x0FFF) as u8) + self.v[0]) as usize, // BNNN jumps to address NNN plus V0
             0xC000..=0xCFFF => { // CXNN Sets VX to the result of a bitwise and operation on a random number (Typically: 0 to 255) and NN.
-                
-            }
+                let mut rng = rand::thread_rng();
+                self.v[(opcode & 0x0F00) as usize] = rng.gen::<u8>() & (opcode & 0x00FF) as u8;
+                self.pc += 2;
+            },
+            // Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels.
+            // Each row of 8 pixels is read as bit-coded starting from memory location I; I value doesn’t change after the execution of this instruction.
+            // As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn’t happen 
+            0xD000..=0xDFFF => { // DXYN
+
+            },
+            0xE000..=0xEFFF => { 
+                match opcode & 0x000F {
+                    0xE => { // EX9E Skips the next instruction if the key stored in VX is pressed. (Usually the next instruction is a jump to skip a code block) 
+
+                    },
+                    0x1 => { // EXA1 Skips the next instruction if the key stored in VX isn't pressed. (Usually the next instruction is a jump to skip a code block) 
+
+                    },
+                    _ => (),
+                }
+            },
+
 
             _ => (),
         }
