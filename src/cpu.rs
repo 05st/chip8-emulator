@@ -1,4 +1,3 @@
-use crate::display::Display;
 use rand::Rng;
 
 pub struct Cpu {
@@ -10,7 +9,6 @@ pub struct Cpu {
     delay_timer: u8,
     sound_timer: u8,
     pc: usize,
-    pub display: Display,
 }
 
 impl Cpu {
@@ -24,7 +22,6 @@ impl Cpu {
             delay_timer: 0,
             sound_timer: 0,
             pc: 0x200,
-            display: Display::new(),
         }
     }
 
@@ -36,7 +33,7 @@ impl Cpu {
             0x0000..=0x0FFF => {
                 match opcode & 0x000F {
                     0x0000 => {
-                        self.display.clear();
+                        
                     }, // 00E0 Clear screen
                     0x000E => { // 00EE Returns from subroutine
                         self.stack_pointer -= 1;
